@@ -5,6 +5,7 @@ import com.java.swing.model.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 public class Controller {
@@ -65,5 +66,21 @@ public class Controller {
 
     public void removePerson(int index) {
         db.removePerson(index);
+    }
+
+    public void save() throws SQLException {
+        db.save();
+    }
+
+    public void disconnect() {
+        db.disconnect();
+    }
+
+    public void connect() throws Exception {
+        db.connect();
+    }
+
+    public void load() throws SQLException {
+        db.load();
     }
 }

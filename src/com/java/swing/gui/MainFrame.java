@@ -4,10 +4,9 @@ import com.java.swing.controller.Controller;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.prefs.Preferences;
 
 public class MainFrame extends JFrame {
@@ -66,11 +65,23 @@ public class MainFrame extends JFrame {
             @Override
             public void saveEventOccured() {
                 System.out.println("Save");
+                connect();
+                try {
+                    controller.save();
+                } catch (SQLException e) {
+                    JOptionPane.showMessageDialog(MainFrame.this, "Cannot save to database", "Database save Fail", JOptionPane.ERROR_MESSAGE);
+                }
             }
 
             @Override
             public void refreshEventOccured() {
-                System.out.println("refresh");
+                connect();
+                try {
+                    controller.load();
+                } catch (SQLException e) {
+                    JOptionPane.showMessageDialog(MainFrame.this, "Cannot load from database", "Database load Fail", JOptionPane.ERROR_MESSAGE);
+                }
+                tablePanel.refresh();
             }
         });
 
@@ -81,14 +92,32 @@ public class MainFrame extends JFrame {
             }
         });
 
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.out.println("Window closing");
+                controller.disconnect();
+                dispose(); // Dispose the window, quit automatic
+                System.gc(); //Garbage collector for stacktrace problem when closing, error input to swing
+            }
+        });
+
         add(toolbar, BorderLayout.NORTH);
         add(tablePanel, BorderLayout.CENTER);
         add(formPanel, BorderLayout.WEST);
 
         setMinimumSize(new Dimension(600, 500));
         setSize(800, 500);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setVisible(true);
+    }
+
+    private void connect() {
+        try {
+            controller.connect();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(MainFrame.this, "Cannot connect to database", "Database connection Fail", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private JMenuBar createMenuBar() {
@@ -171,8 +200,13 @@ public class MainFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int action = JOptionPane.showConfirmDialog(MainFrame.this, "Do you really want to exit the application?", "Confirm Exit", JOptionPane.OK_CANCEL_OPTION);
-                if (action == JOptionPane.OK_OPTION)
-                    System.exit(0);
+                if (action == JOptionPane.OK_OPTION) {
+                    WindowListener[] listeners = getWindowListeners();
+
+                    for (WindowListener listener : listeners) {
+                        listener.windowClosing(new WindowEvent(MainFrame.this, 0));
+                    }
+                }
             }
         });
 
