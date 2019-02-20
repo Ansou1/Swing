@@ -9,6 +9,25 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.prefs.Preferences;
 
+class ServerInfo {
+    private String name;
+    private int id;
+
+    public ServerInfo(String name, int id) {
+        this.name = name;
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+}
+
 public class MainFrame extends JFrame {
 
     private TextPanel textPanel;
@@ -20,6 +39,8 @@ public class MainFrame extends JFrame {
     private PrefsDialog prefsDialog;
     private Preferences prefs;
     private JSplitPane splitPane;
+    private JTabbedPane jTabbedPane;
+    private MessagePanel messagePanel;
 
     public MainFrame() {
         super("Hello world!!!");
@@ -40,8 +61,14 @@ public class MainFrame extends JFrame {
             }
         });
 
-        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, formPanel, tablePanel);
+        jTabbedPane = new JTabbedPane();
+        messagePanel = new MessagePanel();
+
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, formPanel, jTabbedPane);
         splitPane.setOneTouchExpandable(true);
+
+        jTabbedPane.addTab("Person Database", tablePanel);
+        jTabbedPane.addTab("Messages", messagePanel);
 
         prefs = Preferences.userRoot().node("db");
 
