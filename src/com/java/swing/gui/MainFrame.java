@@ -19,6 +19,7 @@ public class MainFrame extends JFrame {
     private TablePanel tablePanel;
     private PrefsDialog prefsDialog;
     private Preferences prefs;
+    private JSplitPane splitPane;
 
     public MainFrame() {
         super("Hello world!!!");
@@ -38,6 +39,9 @@ public class MainFrame extends JFrame {
                 controller.removePerson(row);
             }
         });
+
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, formPanel, tablePanel);
+        splitPane.setOneTouchExpandable(true);
 
         prefs = Preferences.userRoot().node("db");
 
@@ -102,9 +106,8 @@ public class MainFrame extends JFrame {
             }
         });
 
-        add(toolbar, BorderLayout.NORTH);
-        add(tablePanel, BorderLayout.CENTER);
-        add(formPanel, BorderLayout.WEST);
+        add(toolbar, BorderLayout.PAGE_START);
+        add(splitPane, BorderLayout.CENTER);
 
         setMinimumSize(new Dimension(600, 500));
         setSize(800, 500);
@@ -160,6 +163,9 @@ public class MainFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 JCheckBoxMenuItem menuItem = (JCheckBoxMenuItem)e.getSource();
 
+                if (menuItem.isSelected()) {
+                    splitPane.setDividerLocation((int)formPanel.getMinimumSize().getWidth());
+                }
                 formPanel.setVisible(menuItem.isSelected());
             }
         });
