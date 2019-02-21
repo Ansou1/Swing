@@ -9,25 +9,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.prefs.Preferences;
 
-class ServerInfo {
-    private String name;
-    private int id;
-
-    public ServerInfo(String name, int id) {
-        this.name = name;
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    @Override
-    public String toString() {
-        return name;
-    }
-}
-
 public class MainFrame extends JFrame {
 
     private TextPanel textPanel;
