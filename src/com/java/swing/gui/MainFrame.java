@@ -3,6 +3,8 @@ package com.java.swing.gui;
 import com.java.swing.controller.Controller;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
@@ -11,7 +13,6 @@ import java.util.prefs.Preferences;
 
 public class MainFrame extends JFrame {
 
-    private TextPanel textPanel;
     private Toolbar toolbar;
     private FormPanel formPanel;
     private JFileChooser fileChooser;
@@ -29,7 +30,6 @@ public class MainFrame extends JFrame {
         setLayout(new BorderLayout());
 
         toolbar = new Toolbar();
-        textPanel = new TextPanel();
         formPanel = new FormPanel();
 
         controller = new Controller();
@@ -50,6 +50,16 @@ public class MainFrame extends JFrame {
 
         jTabbedPane.addTab("Person Database", tablePanel);
         jTabbedPane.addTab("Messages", messagePanel);
+
+        jTabbedPane.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                int tabIndex = jTabbedPane.getSelectedIndex();
+                if (tabIndex == 1) {
+                    messagePanel.refresh();
+                }
+            }
+        });
 
         prefs = Preferences.userRoot().node("db");
 

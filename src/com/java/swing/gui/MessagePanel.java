@@ -30,8 +30,15 @@ public class MessagePanel extends JPanel implements ProgressDialogListener{
 
     private SwingWorker<List<Message>, Integer> worker;
 
+    private TextPanel textPanel;
+    private JList   messageList;
+    private JSplitPane upperPane;
+    private JSplitPane lowerPane;
+    private DefaultListModel messageListModel;
+
     public MessagePanel(JFrame parent) {
 
+        messageListModel = new DefaultListModel();
         progressDialog = new ProgressDialog(parent, "Messages Downloading...");
         messageServer = new MessageServer();
 
@@ -52,6 +59,8 @@ public class MessagePanel extends JPanel implements ProgressDialogListener{
         serverTree.setEditable(true);
 
         serverTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+
+        messageServer.setSelectedServers(selectedServers);
 
         treeCellEditor.addCellEditorListener(new CellEditorListener() {
             @Override
@@ -76,9 +85,25 @@ public class MessagePanel extends JPanel implements ProgressDialogListener{
 
         setLayout(new BorderLayout());
 
-        add(new JScrollPane(serverTree), BorderLayout.CENTER);
+        textPanel = new TextPanel();
+        messageList = new JList(messageListModel);
+
+        lowerPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(messageList), textPanel);
+        upperPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(serverTree), lowerPane);
+
+        textPanel.setMinimumSize(new Dimension(10, 100));
+        messageList.setMinimumSize(new Dimension(10, 100));
+        serverTree.setMinimumSize(new Dimension(10, 100));
+
+        upperPane.setResizeWeight(0.5);
+        lowerPane.setResizeWeight(0.5);
+
+        add(upperPane, BorderLayout.CENTER);
     }
 
+    public void refresh() {
+        retrieveMessages();
+    }
 
     private void retrieveMessages() {
 
@@ -119,7 +144,11 @@ public class MessagePanel extends JPanel implements ProgressDialogListener{
 
                 try {
                     List<Message> retrievedMessage = get();
+                    messageListModel.removeAllElements();
                     System.out.println("Retrieved " + retrievedMessage.size() + " messages.");
+                    for (Message message : retrievedMessage) {
+                        messageListModel.addElement(message);
+                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
