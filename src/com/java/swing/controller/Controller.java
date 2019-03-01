@@ -83,4 +83,8 @@ public class Controller {
     public void load() throws SQLException {
         db.load();
     }
+
+    public void configure(int port, String user, String password) throws Exception {
+        db.configure(port, user, password);
+    }
 }

@@ -6,10 +6,25 @@ import java.util.*;
 
 public class Database {
     private List<Person> people;
-    Connection conn;
+    private Connection conn;
+
+    private int port;
+    private String user;
+    private String password;
 
     public Database() {
         this.people = new LinkedList<>();
+    }
+
+    public void configure(int port, String user, String password) throws Exception {
+        this.port = port;
+        this.user = user;
+        this.password = password;
+
+        if (conn != null) {
+            disconnect();
+            connect();
+        }
     }
 
     public void addPeople(Person person) {

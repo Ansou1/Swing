@@ -70,6 +70,13 @@ public class MainFrame extends JFrame {
                 prefs.put("user", user);
                 prefs.put("password", password);
                 prefs.putInt("port", port);
+
+                try {
+                    controller.configure(port, user, password);
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(MainFrame.this, "Unable to re-connect");
+                }
+
             }
         });
 
@@ -77,6 +84,12 @@ public class MainFrame extends JFrame {
         String password = prefs.get("password", "");
         Integer port = prefs.getInt("port", 3306);
         prefsDialog.setDefaults(user, password, port);
+
+        try {
+            controller.configure(port, user, password);
+        } catch (Exception e) {
+            System.err.println("Cannot connect to database");
+        }
 
         fileChooser = new JFileChooser();
         fileChooser.addChoosableFileFilter(new PersonFileFilter());
