@@ -1,8 +1,20 @@
 package com.java.swing.model;
 
 public enum EmploymentCategory {
-    employed,
-    selfEmployed,
-    unemplyed,
-    other
+    employed("employed"),
+    selfEmployed("selfEmployed"),
+    unemplyed("unemplyed"),
+    other("other");
+
+    private String text;
+
+    EmploymentCategory(String text) {
+        this.text = text;
+    }
+
+
+    @Override
+    public String toString() {
+        return text;
+    }
 }

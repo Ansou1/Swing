@@ -1,5 +1,6 @@
 package com.java.swing.gui;
 
+import com.java.swing.model.EmploymentCategory;
 import com.java.swing.model.Person;
 
 import javax.swing.*;
@@ -21,6 +22,10 @@ public class TablePanel extends JPanel{
         tableModel = new PersonTableModel();
         table = new JTable(tableModel);
         popup = new JPopupMenu();
+
+        table.setDefaultRenderer(EmploymentCategory.class, new EmployementCategoryRenderer());
+        table.setDefaultEditor(EmploymentCategory.class, new EmploymentCategoryEditor());
+        table.setRowHeight(20);
 
         JMenuItem removeItem = new JMenuItem("Delete row");
         popup.add(removeItem);

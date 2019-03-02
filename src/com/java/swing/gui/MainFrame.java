@@ -110,13 +110,7 @@ public class MainFrame extends JFrame {
 
             @Override
             public void refreshEventOccured() {
-                connect();
-                try {
-                    controller.load();
-                } catch (SQLException e) {
-                    JOptionPane.showMessageDialog(MainFrame.this, "Cannot load from database", "Database load Fail", JOptionPane.ERROR_MESSAGE);
-                }
-                tablePanel.refresh();
+                refresh();
             }
         });
 
@@ -139,6 +133,8 @@ public class MainFrame extends JFrame {
 
         add(toolbar, BorderLayout.PAGE_START);
         add(splitPane, BorderLayout.CENTER);
+
+        refresh();
 
         setMinimumSize(new Dimension(600, 500));
         setSize(800, 500);
@@ -248,5 +244,15 @@ public class MainFrame extends JFrame {
         });
 
         return menuBar;
+    }
+
+    public void refresh() {
+        connect();
+        try {
+            controller.load();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(MainFrame.this, "Cannot load from database", "Database load Fail", JOptionPane.ERROR_MESSAGE);
+        }
+        tablePanel.refresh();
     }
 }
